@@ -1,14 +1,107 @@
+//[-1,0,1,2,-1,-4] 0
+// Hash table
+//Run a loop from i=0 to n-2
+//Create an empty hash table
+//Run inner loop from j=i+1 to n-1
+  //If -(arr[i] + arr[j]) is present in hash table
+//print arr[i], arr[j] and -(arr[i]+arr[j])
+  //Else
+  //Insert arr[j] in hash table.
+//[-1,0,2,1,2,-1,-4] 1
+
+//const diff = arr[i] < 0 ? arr[i] + target : -(arr[i] + target)
+
+  //[
+    //[-1, 0, 1],
+    //[-1, -1, 2]
+  //]
+
+//1. Sort all element of array
+//2. Run loop from i=0 to n-2.
+  //Initialize two index variables l=i+1 and r=n-1
+//4. while (l < r) 
+  //Check sum of arr[i], arr[l], arr[r] is
+  //zero or not if sum is zero then print the
+  //triplet and do l++ and r--.
+  //5. If sum is less than zero then l++
+  //6. If sum is greater than zero then r--
+  //7. If not exist in array then print not found.
+
+//Problem: Product of Array Except Self
+//Given an array nums of n integers where n > 1, return an array output such that output[i] is equal to the product of all the elements of nums except nums[i].
+//Note: Please solve it without division and in O(n).
+//Example:
+//Input:  [1,2,3,4]
+//Output: [24,12,8,6]
+//1. Find mid value and break the array into two parts
+//2. Create 2 arrays left, and right
+//3. For left array, each cell is the multiplcation from it's left element
+//3. For right array, each cell is the multiplcation from it's right element
+const productArrayExceptSelf = (array) => {
+  let left = [];
+  let right = [];
+  // Left
+  for(let i = 0; i < array.length; i++) {
+    if(i === 0) {
+      left[i] = 1;
+    } else {
+      left[i] = left[i-1] * array[i-1];
+    }
+  }
+  // Right
+  for(let i = array.length-1; i >= 0; i--) {
+    if(i === array.length-1) {
+      right[i] = 1;
+    } else {
+      right[i] = right[i+1] * array[i+1];
+    }
+  }
+  let answer = [];
+  for(let i = 0; i < array.length; i++) {
+    answer.push(left[i]*right[i]); 
+  }
+  return answer;
+}
+console.log(productArrayExceptSelf([1,2,3,4]) === [24,12,8,6] ? 'pass' : 'fail', 'productArrayExceptSelf([1,2,3,4])')
+
+//Problem: Best time to buy and sell stocks
+//Example 1:
+//Input: [7,1,5,3,6,4]
+//Output: 5
+//Explanation: Buy on day 2 (price = 1) and sell on day 5 (price = 6), profit = 6-1 = 5.
+//Not 7-1 = 6, as selling price needs to be larger than buying price.
+//Example 2:
+//Input: [7,6,4,3,1]
+//Output: 0
+//Explanation: In this case, no transaction is done, i.e. max profit = 0.
+const bestTimeBuySellStock = (stocks) => {
+  if(stocks.length < 2) {
+    return 0; 
+  }
+  let min = stocks[0];
+  let profit = 0;
+  for(let i = 1; i < stocks.length; i++) {
+    if(stocks[i] < min) {
+      min = stocks[i];
+    } else {
+      if(stocks[i] - min > profit) {
+        profit = stocks[i] - min; 
+      }
+    }
+  }
+  return profit;
+}
+
+console.log(bestTimeBuySellStock([7,1,5,3,6,4]) === 5 ? 'pass' : 'fail', 'bestTimeBuySellStock([7,1,5,3,6,4])')
+console.log(bestTimeBuySellStock([7,6,4,3,1]) === 0 ? 'pass' : 'fail', 'bestTimeBuySellStock([7,6,4,3,1])')
+
 //Maximum sub array:
 //Given an integer array nums, find the contiguous subarray (containing at least one number) which has the largest sum and return its sum.
-
 //Example:
-
 //Input: [-2,1,-3,4,-1,2,1,-5,4],
   //Output: 6
   //Explanation: [4,-1,2,1] has the largest sum = 6.
-
   //Follow up:
-
   //If you have figured out the O(n) solution, try coding another solution using the divide and conquer approach, which is more subtle.
 
 var maxSubArray = function(nums) {
@@ -254,6 +347,15 @@ console.log();
 ////The function twoSum should return indices of the two numbers such that they add up to the target, where index1 must be less than index2. Please note that your returned answers (both index1 and index2) are not zero-based.
 ////You may assume that each input would have exactly one solution.
 ////Input: numbers={2, 7, 11, 15}, target=9
+//var twoSum = function(nums, target) {
+  //for(let i = 0; i < nums.length; i++){
+    //for(let j = i+1; j < nums.length; j++) {
+      //if(nums[i]+nums[j] === target){
+        //return [i, j]
+      //}
+    //}
+  //}
+//};
 
 //// SEARCH FOR A RANGE
 //// Given a sorted array of integers, find the starting and ending position of a given target value
@@ -348,3 +450,19 @@ console.log();
 ////console.log('K-Concatenation Maximum Sum : ', maxSum([-5,2,-1,3,-4], 5) === 5 ? 'PASS' : 'FAIL');
 ////console.log('K-Concatenation Maximum Sum : ', maxSum([2,-5,1,1], 5) === 4 ? 'PASS' : 'FAIL');
 ////console.log('K-Concatenation Maximum Sum : ', maxSum([-2,5,1,-3], 7) === 12 ? 'PASS' : 'FAIL');
+
+
+
+// Sliding Window
+//So the first thing you want to be able to do is to identify a problem that uses a sliding window paradigm. Luckily, there are some common giveaways:
+
+//The problem will involve a data structure that is ordered and iterable like an array or a string
+
+//You are looking for some subrange in that array/string, like a longest, shortest or target value.
+
+//There is an apparent naive or brute force solution that runs in O(N²), O(2^N) or some other large time complexity.
+
+//But the biggest giveaway is that the thing you are looking for is often some kind of optimal, like the longest sequence or shortest sequence of something that satisfies a given condition exactly.
+//
+// B-tree v.s. B+-tree
+//https://stackoverflow.com/questions/870218/differences-between-b-trees-and-b-trees
