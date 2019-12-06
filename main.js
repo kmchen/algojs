@@ -920,3 +920,175 @@ const findLongSubstrUniqueChars = (str, target) => {
     }
   }
 }
+
+//Array problem: Maximize number of 0s by flipping a subarray
+//Given a binary array, find the maximum number zeros in an array with one flip of a subarray allowed. A flip operation switches all 0s to 1s and 1s to 0s.
+//Input :  arr[] = {0, 1, 0, 0, 1, 1, 0}
+//Input :  arr[] = {-1, 1, -1, -1, 1, 1, -1}
+//Output : 6
+//We can get 6 zeros by flipping the subarray {1, 1}
+//Input :  arr[] = {0, 0, 0, 1, 0, 1}
+//Output : 5
+// Brut force: Find all consecutive 1's in subarray, Time O(n*2), Space O(1)
+// Sliding window: Time O(n*2), Space O(1)
+//This problem can be reduced to largest subarray sum problem. The idea is to consider every 0 as -1 and every 1 as 1, find the sum of largest subarray sum in this modified array. This sum is our required max_diff ( count of 0s – count of 1s in any subarray). Finally we return the max_diff plus count of zeros in original array.
+const maxZerosByFlippingSubArray = (nums) => {
+  let currMax = 0;
+  let maxDiff = 0;
+  let zeros = 0;
+  for(let i = 0; i < nums.length;i++) {
+    if (nums[i] == 0) {
+      zeros++; 
+    }
+    const val = (nums[i] == 1)? 1 : -1; 
+    currMax = Math.max(val, val+currMax);
+    maxDiff = Math.max(maxDiff, currMax);
+  }
+  maxDiff = Math.max(maxDiff, 0);
+  return zeros+maxDiff
+}
+console.log(maxZerosByFlippingSubArray([0,1,0,0,1,1,0]) === 6 ? 'pass':'fail', ': maxZerosByFlippingSubArray([0,1,0,0,1,1,0])')
+console.log(maxZerosByFlippingSubArray([0,0,0,1,0,1]) === 5 ? 'pass':'fail', ': maxZerosByFlippingSubArray([0,0,0,1,0,1])')
+
+//String problem: Find All Anagrams in a String
+//Input:
+//s: "cbaebabacd" p: "abc"
+//Output:
+//[0, 6]
+//
+//Explanation:
+//The substring with start index = 0 is "cba", which is an anagram of "abc".
+//The substring with start index = 6 is "bac", which is an anagram of "abc".
+//Input:
+//s: "abab" p: "ab"
+//Output:
+//[0, 1, 2]
+//
+//Explanation:
+//The substring with start index = 0 is "ab", which is an anagram of "ab".
+//The substring with start index = 1 is "ba", which is an anagram of "ab".
+//The substring with start index = 2 is "ab", which is an anagram of "ab".
+
+const AnagramString = (s, p) => {
+  let hash = {};
+  let missing = 0;
+  for(let i = 0; i < p.length; i++) {
+    const currChar = p[i];
+    hash[currChar] = hash[currChar] ? hash[currChar]+1 : 0;
+    missing++; 
+  }
+  let fast = 0;
+  let slow = 0;
+  let ans = [];
+  //let a = {'a': 1, 'b':1, 'c': 1}
+  for(;fast < s.length; fast++) {
+    let currChar = s[fast];
+    if(currChar in hash) {
+      if(hash[currChar] === 0) {
+        missing--;
+      }
+      hash[currChar]++;
+    }
+    console.log(currChar, hash, 'missing: ', missing, 'slow:', slow, 'fast:', fast)
+    // Shrink window until you have an incomplete set
+    while(missing === 0) {
+      //Updates result range if smaller than previous range
+      if(s[slow] in hash) {
+        hash[s[slow]]--;
+        if(hash[s[slow]] === 0) {
+          missing++;
+          ans.push(slow);
+        }
+      }
+      slow++;
+    }
+    console.log(slow, fast, hash, missing)
+  }
+  return ans;
+}
+console.log(AnagramString('cbaebabacd', 'abc'))
+// [0, 6]
+//console.log(AnagramString('cbaebabacd', 'abc'))
+
+function minimumWindowSubstring(S, T) {
+
+  let shortest = [0, Infinity]
+  let counts = {};
+  let missingCharacters = T.length;
+
+  //   Create the counts hash table
+  for(let i = 0; i < T.length; i++) {
+    counts[T[i]] = 0;
+  }
+
+  let slow = 0;
+
+
+  for(let fast = 0; fast < S.length; fast++) {
+
+
+    //     Check if character at fast index is incounts hash
+    if(S[fast] in counts) {
+      //     If you haven't seen that character before
+      if(counts[S[fast]] === 0) {
+        //         Decrement number of missing characters
+        missingCharacters -= 1;
+      }
+      //       And add one to its counts value
+      counts[S[fast]] += 1
+    }
+
+
+    //     Shrink window until you have an incomplete set
+    while(missingCharacters === 0) {
+      //       Updates result range if smaller than previous range
+      if((fast - slow) < (shortest[1] - shortest[0])) {
+        shortest[0] = slow
+          shortest[1] = fast
+      }
+
+
+      if(S[slow] in counts) {
+        counts[S[slow]] -= 1
+          if(counts[S[slow]] === 0) {
+            missingCharacters += 1
+          }
+      }
+      slow += 1;
+    }
+  }
+
+
+  return shortest[1] === Infinity ? "" : S.slice(shortest[0], shortest[1] + 1);
+}
+console.log(minimumWindowSubstring("ADOBECODEBANC", "ABC"))
+
+//const AnagramString = (s, p) => {
+  //let actualList = new Array(26).fill(0);
+  //let expectedList = new Array(26).fill(0);
+  //let offSet = 'a'.charCodeAt();
+  //let ans = [];
+  //for(let i = 0; i < p.length;i++) {
+    //expectedList[p[i].charCodeAt()-offSet]++;
+  //}
+  //const isEqual = (actualList, expectedList) => {
+    //for(let i = 0; i < actualList.length; i++) {
+      //if(actualList[i] != expectedList[i]) {
+        //return false;  
+      //}
+    //}
+    //return true;
+  //}
+  //for(let i = 0; i < s.length; i++) {
+    //const currChar = s[i].charCodeAt()-offSet;
+    //if(i - p.length >= 0) {
+      //actualList[s[i].charCodeAt()-offSet]--;
+    //}
+    //actualList[currChar]++;
+    //if(isEqual(actualList, expectedList)) {
+      //ans.push(i) 
+    //}
+  //}
+  //return ans;
+//}
+//console.log(AnagramString('cbaebabacd', 'abc'))
