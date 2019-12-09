@@ -1012,4 +1012,57 @@ const compareArray = (assert, expect) => {
 }
 
 console.log(compareArray(AnagramString('cbaebabacd', 'abc'), [0, 6]) ? 'pass':'fail', ': AnagramString(\'cbaebabacd\', \'abc\')')
-console.log(compareArray(AnagramString('abab', 'ab'), [0, 1, 2]) ? 'pass':'fail', ': AnagramString(\'abab\', \'ab\')')
+console.log(compareArray(AnagramString('abab', 'ab'), [0, 1, 2]) ? 'pass':'fail', ': AnagramString(\'abab\', \'ab\')');
+
+// String problem: Given a string S and a string T, find the minimum window in S which will contain all the characters in T in complexity O(n).
+//Example:
+//Input: S = "ADOBECODEBANC", T = "ABC" //Output: "BANC"
+
+//Note:
+//If there is no such window in S that covers all characters in T, return the empty string "".
+//If there is such window, you are guaranteed that there will always be only one unique minimum window in S.
+
+const minWindowSubstring = (s, t) => {
+  let hash = {};
+  let fast = 0;
+  let slow = 0;
+  let missing = 0;
+  let ans = '';
+  let length = Number.MAX_VALUE;
+  let index = [];
+  for(let i = 0;i < t.length;i++) {
+    hash[t[i]] = 0;
+    missing++;
+  }
+
+  for(;fast < s.length;fast++) {
+    if(s[fast] in hash) {
+      // If hash is set to initial data
+      if(hash[s[fast]] === 0) {
+        missing--;
+      }
+      hash[s[fast]]++;
+    }
+    // Shrink the window when the window has all characters
+    while(missing === 0) {
+      if(s[slow] in hash) {
+        hash[s[slow]]--;
+        if(hash[s[slow]] === 0) {
+          if(fast - slow < length) {
+            length = fast-slow+1;
+            index = [slow, fast];
+          }
+          missing++;
+        }
+      }
+      slow++; 
+    }
+  }
+  for(let j = index[0]; j <= index[1];j++){
+    ans+=s[j];
+  }
+  return ans;
+}
+console.log(minWindowSubstring("ADOBECODEBANC", "ABC") === 'BANC' ? 'pass':'fail', ': minWindowSubstring("ADOBECODEBANC", "ABC")')
+console.log(minWindowSubstring("aa", "aa"))
+console.log(minWindowSubstring("aa", "aa") === 'aa' ? 'pass':'fail', ': minWindowSubstring("aa", "aa")')
