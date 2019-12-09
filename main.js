@@ -968,127 +968,48 @@ console.log(maxZerosByFlippingSubArray([0,0,0,1,0,1]) === 5 ? 'pass':'fail', ': 
 //The substring with start index = 0 is "ab", which is an anagram of "ab".
 //The substring with start index = 1 is "ba", which is an anagram of "ab".
 //The substring with start index = 2 is "ab", which is an anagram of "ab".
-
-const AnagramString = (s, p) => {
+const AnagramString = (s, t) => {
   let hash = {};
   let missing = 0;
-  for(let i = 0; i < p.length; i++) {
-    const currChar = p[i];
-    hash[currChar] = hash[currChar] ? hash[currChar]+1 : 0;
-    missing++; 
+  for(let i = 0; i < t.length; i++) {
+    hash[t[i]] = 0;
+    missing++;
   }
   let fast = 0;
   let slow = 0;
-  let ans = [];
-  //let a = {'a': 1, 'b':1, 'c': 1}
-  for(;fast < s.length; fast++) {
-    let currChar = s[fast];
-    if(currChar in hash) {
-      if(hash[currChar] === 0) {
-        missing--;
+  let ans = []
+  // Fast index
+  for(; fast < s.length; fast++) {
+    if(s[fast] in hash) {
+      // Check if it's initial value
+      if(hash[s[fast]] === 0) {
+        missing--; 
       }
-      hash[currChar]++;
+      hash[s[fast]]++;
     }
-    console.log(currChar, hash, 'missing: ', missing, 'slow:', slow, 'fast:', fast)
-    // Shrink window until you have an incomplete set
+    // Shrink window
     while(missing === 0) {
-      //Updates result range if smaller than previous range
       if(s[slow] in hash) {
         hash[s[slow]]--;
         if(hash[s[slow]] === 0) {
-          missing++;
           ans.push(slow);
+          missing++;
         }
       }
       slow++;
     }
-    console.log(slow, fast, hash, missing)
   }
   return ans;
 }
-console.log(AnagramString('cbaebabacd', 'abc'))
-// [0, 6]
-//console.log(AnagramString('cbaebabacd', 'abc'))
 
-function minimumWindowSubstring(S, T) {
-
-  let shortest = [0, Infinity]
-  let counts = {};
-  let missingCharacters = T.length;
-
-  //   Create the counts hash table
-  for(let i = 0; i < T.length; i++) {
-    counts[T[i]] = 0;
-  }
-
-  let slow = 0;
-
-
-  for(let fast = 0; fast < S.length; fast++) {
-
-
-    //     Check if character at fast index is incounts hash
-    if(S[fast] in counts) {
-      //     If you haven't seen that character before
-      if(counts[S[fast]] === 0) {
-        //         Decrement number of missing characters
-        missingCharacters -= 1;
-      }
-      //       And add one to its counts value
-      counts[S[fast]] += 1
-    }
-
-
-    //     Shrink window until you have an incomplete set
-    while(missingCharacters === 0) {
-      //       Updates result range if smaller than previous range
-      if((fast - slow) < (shortest[1] - shortest[0])) {
-        shortest[0] = slow
-          shortest[1] = fast
-      }
-
-
-      if(S[slow] in counts) {
-        counts[S[slow]] -= 1
-          if(counts[S[slow]] === 0) {
-            missingCharacters += 1
-          }
-      }
-      slow += 1;
+const compareArray = (assert, expect) => {
+  for(let i = 0; i < expect.length; i++) {
+    if(assert[i] != expect[i]) {
+      return false; 
     }
   }
-
-
-  return shortest[1] === Infinity ? "" : S.slice(shortest[0], shortest[1] + 1);
+  return true;
 }
-console.log(minimumWindowSubstring("ADOBECODEBANC", "ABC"))
 
-//const AnagramString = (s, p) => {
-  //let actualList = new Array(26).fill(0);
-  //let expectedList = new Array(26).fill(0);
-  //let offSet = 'a'.charCodeAt();
-  //let ans = [];
-  //for(let i = 0; i < p.length;i++) {
-    //expectedList[p[i].charCodeAt()-offSet]++;
-  //}
-  //const isEqual = (actualList, expectedList) => {
-    //for(let i = 0; i < actualList.length; i++) {
-      //if(actualList[i] != expectedList[i]) {
-        //return false;  
-      //}
-    //}
-    //return true;
-  //}
-  //for(let i = 0; i < s.length; i++) {
-    //const currChar = s[i].charCodeAt()-offSet;
-    //if(i - p.length >= 0) {
-      //actualList[s[i].charCodeAt()-offSet]--;
-    //}
-    //actualList[currChar]++;
-    //if(isEqual(actualList, expectedList)) {
-      //ans.push(i) 
-    //}
-  //}
-  //return ans;
-//}
-//console.log(AnagramString('cbaebabacd', 'abc'))
+console.log(compareArray(AnagramString('cbaebabacd', 'abc'), [0, 6]) ? 'pass':'fail', ': AnagramString(\'cbaebabacd\', \'abc\')')
+console.log(compareArray(AnagramString('abab', 'ab'), [0, 1, 2]) ? 'pass':'fail', ': AnagramString(\'abab\', \'ab\')')
