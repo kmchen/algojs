@@ -1022,47 +1022,255 @@ console.log(compareArray(AnagramString('abab', 'ab'), [0, 1, 2]) ? 'pass':'fail'
 //If there is no such window in S that covers all characters in T, return the empty string "".
 //If there is such window, you are guaranteed that there will always be only one unique minimum window in S.
 
-const minWindowSubstring = (s, t) => {
+//const minWindowSubstring = (s, t) => {
+  //let hash = {};
+  //let fast = 0;
+  //let slow = 0;
+  //let missing = 0;
+  //let ans = '';
+  //let length = Number.MAX_VALUE;
+  //let index = [];
+  //for(let i = 0;i < t.length;i++) {
+    //hash[t[i]] = 0;
+    //missing++;
+  //}
+
+  //for(;fast < s.length;fast++) {
+    //if(s[fast] in hash) {
+      //// If hash is set to initial data
+      //if(hash[s[fast]] === 0) {
+        //missing--;
+      //}
+      //hash[s[fast]]++;
+    //}
+    //// Shrink the window when the window has all characters
+    //while(missing === 0) {
+      //if(s[slow] in hash) {
+        //hash[s[slow]]--;
+        //if(hash[s[slow]] === 0) {
+          //if(fast - slow < length) {
+            //length = fast-slow+1;
+            //index = [slow, fast];
+          //}
+          //missing++;
+        //}
+      //}
+      //slow++; 
+    //}
+  //}
+  //for(let j = index[0]; j <= index[1];j++){
+    //ans+=s[j];
+  //}
+  //return ans;
+//}
+//console.log(minWindowSubstring("ADOBECODEBANC", "ABC") === 'BANC' ? 'pass':'fail', ': minWindowSubstring("ADOBECODEBANC", "ABC")')
+//console.log(minWindowSubstring("aa", "aa") === 'aa' ? 'pass':'fail', ': minWindowSubstring("aa", "aa")')
+
+//String problem: Longest Substring Without Repeating Characters. Given a string, find the length of the longest substring without repeating characters.
+//Example 1:
+//Input: "abcabcbb"
+//Output: 3 
+//Explanation: The answer is "abc", with the length of 3. 
+//Example 2:
+//Input: "bbbbb"
+//Output: 1
+//Explanation: The answer is "b", with the length of 1.
+//Example 3:
+//Input: "pwwkew"
+//Output: 3
+//Explanation: The answer is "wke", with the length of 3. Note that the answer must be a substring, "pwke" is a subsequence and not a substring.
+
+const longestSubstringLength = (str) => {
+  if(str.length === 0) {
+    return 0; 
+  }
+  if(str.length === 1) {
+    return 1; 
+  }
   let hash = {};
   let fast = 0;
   let slow = 0;
-  let missing = 0;
-  let ans = '';
-  let length = Number.MAX_VALUE;
-  let index = [];
-  for(let i = 0;i < t.length;i++) {
-    hash[t[i]] = 0;
-    missing++;
-  }
-
-  for(;fast < s.length;fast++) {
-    if(s[fast] in hash) {
-      // If hash is set to initial data
-      if(hash[s[fast]] === 0) {
-        missing--;
-      }
-      hash[s[fast]]++;
-    }
-    // Shrink the window when the window has all characters
-    while(missing === 0) {
-      if(s[slow] in hash) {
-        hash[s[slow]]--;
-        if(hash[s[slow]] === 0) {
-          if(fast - slow < length) {
-            length = fast-slow+1;
-            index = [slow, fast];
-          }
-          missing++;
+  let length = 1;
+  for(;fast < str.length;fast++) {
+    if(!(str[fast] in hash)) {
+      // NOT in the hash
+      hash[str[fast]] = 1;
+      length = Math.max(length, Object.keys(hash).filter(val => hash[val] > 0).length);
+    } else {
+      hash[str[fast]]++;
+      // Char in the hash
+      while(slow < fast) {
+        if(str[slow] === str[fast]) {
+          hash[str[slow]]--;
+          slow++;
+          break; 
         }
+        hash[str[slow]]--;
+        slow++; 
       }
-      slow++; 
     }
   }
-  for(let j = index[0]; j <= index[1];j++){
-    ans+=s[j];
+  return length
+}
+console.log(longestSubstringLength("abcabcbb") === 3 ? 'pass':'fail', ': longestSubstringLength("abcabcbb")')
+console.log(longestSubstringLength("bbbbbbbb") === 1 ? 'pass':'fail', ': longestSubstringLength("bbbbbbbb")')
+console.log(longestSubstringLength("pwwkew") === 3 ? 'pass':'fail', ': longestSubstringLength("pwwkew")')
+console.log(longestSubstringLength("c") === 1 ? 'pass':'fail', ': longestSubstringLength("c")')
+console.log(longestSubstringLength("au") === 2 ? 'pass':'fail', ': longestSubstringLength("au")')
+console.log(longestSubstringLength("abcabcbb") === 3 ? 'pass':'fail', ': longestSubstringLength("abcabcbb")')
+console.log(longestSubstringLength("aab") === 2 ? 'pass':'fail', ': longestSubstringLength("aab")')
+console.log(longestSubstringLength("nfpdmpi") === 5 ? 'pass':'fail', ': longestSubstringLength("nfpdmpi")')
+console.log(longestSubstringLength("") === 0 ? 'pass':'fail', ': longestSubstringLength("")')
+console.log(longestSubstringLength("dvdf") === 3 ? 'pass':'fail', ': longestSubstringLength("dvdf")')
+console.log(longestSubstringLength("tmmzuxt") === 5 ? 'pass':'fail', ': longestSubstringLength("tmmzuxt")')
+
+// String problem: Given a string s that consists of only uppercase English letters, you can perform at most k operations on that string.
+//In one operation, you can choose any character of the string and change it to any other uppercase English character.
+//Find the length of the longest sub-string containing all repeating letters you can get after performing the above operations.
+//Note:
+//Both the string's length and k will not exceed 104.
+//Example 1:
+//Input:
+//s = "ABAB", k = 2
+//Output:
+//4
+//Explanation:
+//Replace the two 'A's with two 'B's or vice versa.
+//Example 2:
+//Input:
+//s = "AABABBA", k = 1
+//Output:
+//4
+//Explanation:
+//Replace the one 'A' in the middle with 'B' and form "AABBBBA".
+//The substring "BBBB" has the longest repeating letters, which is 4.
+
+//String problem: Valid palindrome. Given a string, determine if it is a palindrome, considering only alphanumeric characters and ignoring cases.
+//Note: For the purpose of this problem, we define empty string as valid palindrome.
+//Example 1:
+//Input: "A man, a plan, a canal: Panama"
+//Output: true
+//Example 2:
+//Input: "race a car"
+//Output: false
+const validPalindrom = (str) => {
+  let newStr = '';
+  for(let i = 0; i < str.length; i++) {
+    const charCode = str[i].charCodeAt();
+    if((charCode >= '0'.charCodeAt() && charCode <= '9'.charCodeAt()) || (charCode >= 'A'.charCodeAt() && charCode <= 'Z'.charCodeAt()) || (charCode >= 'a'.charCodeAt() && charCode <= 'z'.charCodeAt())) {
+      newStr+=str[i].toLowerCase();
+    }
+  }
+  let start = 0;
+  let end = newStr.length-1;
+  while(start < end) {
+    if(newStr[start] != newStr[end]) {
+      console.log(start, end, newStr[start], newStr[end])
+      return false 
+    }
+    start++;
+    end--; 
+  }
+  return true
+}
+console.log(validPalindrom("A man, a plan, a canal: Panama") === true ? 'pass':'fail', ': validPalindrom("A man, a plan, a canal: Panama")')
+console.log(validPalindrom("race a car") === false ? 'pass':'fail', ': validPalindrom("race a car")')
+console.log(validPalindrom("0P") === false ? 'pass':'fail', ': validPalindrom("0P")')
+
+//String problem: Given a string containing just the characters '(', ')', '{', '}', '[' and ']', determine if the input string is valid.
+//An input string is valid if:
+//Open brackets must be closed by the same type of brackets.
+//Open brackets must be closed in the correct order.
+//Note that an empty string is also considered valid.
+//Example 1:
+//Input: "()"
+//Output: true
+//Example 2:
+//Input: "()[]{}"
+//Output: true
+//Example 3:
+//Input: "(]"
+//Output: false
+//Example 4:
+//Input: "([)]"
+//Output: false
+//Example 5:
+//Input: "{[]}"
+//Output: true
+const validParenthesis = (str) => {
+    const matches = {
+      '{': '}', 
+      '[': ']', 
+      '(': ')' 
+    };
+    const reverseMatches = {
+      '}': '{', 
+      ']': '[', 
+      ')': '(' 
+    };
+    let array = [];
+    for(let i = 0; i < str.length; i++) {
+      if(str[i] in matches) {
+        array.push(str[i]);
+      }
+      if(str[i] in reverseMatches && reverseMatches[str[i]] != array.pop()) {
+        return false;
+      }
+    }
+    if(array.length != 0) {
+      return false; 
+    }
+    return true;
+}
+
+console.log(validParenthesis("()") === true ? 'pass':'fail', ': validParenthesis("()")')
+console.log(validParenthesis("()[]{}") === true ? 'pass':'fail', ': validParenthesis("()[]{}")')
+console.log(validParenthesis("(]") === false ? 'pass':'fail', ': validParenthesis("(]")')
+console.log(validParenthesis("([)]") === false ? 'pass':'fail', ': validParenthesis("([)]")')
+console.log(validParenthesis("{[]}") === true ? 'pass':'fail', ': validParenthesis("{[]}")')
+
+//String problem: Palindromic substring. Given a string, your task is to count how many palindromic substrings in this string.
+//The substrings with different start indexes or end indexes are counted as different substrings even they consist of same characters.
+//Example 1:
+//Input: "abc"
+//Output: 3
+//Explanation: Three palindromic strings: "a", "b", "c".
+//Example 2:
+//Input: "aaa"
+//Output: 6
+//Explanation: Six palindromic strings: "a", "a", "a", "aa", "aa", "aaa".
+//Note:
+//The input string length won't exceed 1000.
+//validPalindrom(str)
+
+//String problem: Longest Palindromic Substring. Given a string s, find the longest palindromic substring in s. You may assume that the maximum length of s is 1000.
+//Example 1:
+//Input: "babad"
+//Output: "bab"
+//Note: "aba" is also a valid answer.
+//Example 2:
+//Input: "cbbd"
+//Output: "bb"
+const longestPalindromicSubstring = (s) => {
+  let ans = s[0];
+  for(let i = 0; i < s.length; i++) {
+    let str1 = expandCorners(s, i, i) 
+    let str2 = expandCorners(s, i, i+1) 
+    let newStr = str1.length > str2.length ? str1 : str2;
+    ans = newStr.length > ans.length ? newStr : ans;
   }
   return ans;
 }
-console.log(minWindowSubstring("ADOBECODEBANC", "ABC") === 'BANC' ? 'pass':'fail', ': minWindowSubstring("ADOBECODEBANC", "ABC")')
-console.log(minWindowSubstring("aa", "aa"))
-console.log(minWindowSubstring("aa", "aa") === 'aa' ? 'pass':'fail', ': minWindowSubstring("aa", "aa")')
+
+const expandCorners = (str, l, r) => {
+  let right = r;
+  let left = l;
+  while(left >=0 && right < str.length && str[left] === str[right]) {
+    left--;
+    right++; 
+  }
+  return str.slice(left+1, right);
+}
+console.log(longestPalindromicSubstring("babad") === 'bab' ? 'pass':'fail', ': longestPalindromicSubstring("babad")')
+//Note: "aba" is also a valid answer.
+console.log(longestPalindromicSubstring("cbbd") === 'bb' ? 'pass':'fail', ': longestPalindromicSubstring("cbbd")')
